@@ -21,7 +21,7 @@ interface TicketModel extends Model<TicketDocument> {
   build(ticketAttrs: TicketAttrs): TicketDocument;
 }
 
-const userSchema = new Schema<TicketDocument, TicketModel>(
+const ticketSchema = new Schema<TicketDocument, TicketModel>(
   {
     title: {
       type: String,
@@ -48,14 +48,14 @@ const userSchema = new Schema<TicketDocument, TicketModel>(
   }
 );
 
-userSchema.plugin(updateIfCurrentPlugin);
+ticketSchema.plugin(updateIfCurrentPlugin);
 
-userSchema.statics.build = (ticketAttrs: TicketAttrs) =>
+ticketSchema.statics.build = (ticketAttrs: TicketAttrs) =>
   new Ticket(ticketAttrs);
 
 const Ticket: TicketModel = model<TicketDocument, TicketModel>(
   "ticket",
-  userSchema,
+  ticketSchema,
   "tickets"
 );
 
