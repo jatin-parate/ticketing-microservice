@@ -23,7 +23,7 @@ it("implements optimistic concurrency control", async () => {
   await firstInstance!.save();
 
   // save the second fetched ticket and expect an error
-  expect(secondInstance!.save()).rejects.toThrow();
+  await expect(secondInstance!.save()).rejects.toThrow();
 });
 
 it("increments the version number on multiple saves", async () => {

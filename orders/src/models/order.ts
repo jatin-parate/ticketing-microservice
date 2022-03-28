@@ -1,6 +1,7 @@
 import { Document, model, Model, Schema, Types } from "mongoose";
 import { OrderStatus } from "@jatin.parate/common";
 import { TicketDocument } from "./Ticket";
+import {updateIfCurrentPlugin} from 'mongoose-update-if-current';
 
 interface OrderAttrs {
   userId: string;
@@ -11,11 +12,12 @@ interface OrderAttrs {
 
 interface OrderDocType extends OrderAttrs {
   id: Types.ObjectId;
+  version: number;
 }
 
 export interface OrderDocument
   extends Omit<Document<Types.ObjectId, {}, OrderDocType>, "__v">,
-    OrderAttrs {}
+    OrderAttrs, Pick<OrderDocType, 'version'> {}
 
 interface OrderModel extends Model<OrderDocument> {
   build(orderAttrs: OrderAttrs): OrderDocument;
@@ -43,7 +45,7 @@ const orderSchema = new Schema<OrderDocument, OrderModel>(
   },
   {
     timestamps: false,
-    versionKey: false,
+    versionKey: 'version',
     toJSON: {
       transform: (_doc, ret) => {
         ret.id = ret._id;
@@ -52,6 +54,8 @@ const orderSchema = new Schema<OrderDocument, OrderModel>(
     },
   }
 );
+
+orderSchema.plugin(updateIfCurrentPlugin);
 
 orderSchema.statics.build = (orderAttrs: OrderAttrs) => new Order(orderAttrs);
 
