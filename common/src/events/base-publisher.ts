@@ -11,7 +11,7 @@ interface Event {
 export abstract class BasePublisher<T extends Event> {
   abstract subject: T["subject"];
 
-  constructor(private client: Stan) {
+  constructor(protected client: Stan) {
   }
 
   async publish(data: T["data"]) {

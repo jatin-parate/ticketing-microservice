@@ -1,6 +1,6 @@
-import { Document, model, Model, Schema, Types } from "mongoose";
-import { OrderStatus } from "@jatin.parate/common";
-import { TicketDocument } from "./Ticket";
+import {Document, model, Model, Schema, Types} from "mongoose";
+import {OrderStatus} from "@jatin.parate/common";
+import {TicketDocument} from "./Ticket";
 import {updateIfCurrentPlugin} from 'mongoose-update-if-current';
 
 interface OrderAttrs {
@@ -17,7 +17,8 @@ interface OrderDocType extends OrderAttrs {
 
 export interface OrderDocument
   extends Omit<Document<Types.ObjectId, {}, OrderDocType>, "__v">,
-    OrderAttrs, Pick<OrderDocType, 'version'> {}
+    OrderAttrs, Pick<OrderDocType, 'version'> {
+}
 
 interface OrderModel extends Model<OrderDocument> {
   build(orderAttrs: OrderAttrs): OrderDocument;
