@@ -1,6 +1,8 @@
 import { connect } from "mongoose";
 import app from "./app";
 import { natsWrapper } from "./nats-wrapper";
+import {OrderCreatedListener} from "./events/listeners/order-created-listener";
+import {OrderCancelledListener} from "./events/listeners/order-cancelled-listener";
 
 const main = async () => {
   if (!process.env.JWT_KEY) {
@@ -33,6 +35,8 @@ const main = async () => {
   process.on("SIGTERM", () => natsWrapper.client.close());
 
   await connect(process.env.MONGO_URI!);
+  new OrderCreatedListener(natsWrapper.client).listen();
+  new OrderCancelledListener(natsWrapper.client).listen();
 
   app.listen(3000, () => {
     console.log("Server started on port 3000");

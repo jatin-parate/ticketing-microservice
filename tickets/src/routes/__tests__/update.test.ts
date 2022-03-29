@@ -152,3 +152,20 @@ it("emits event successfully", async () => {
 
   expect(natsWrapper.client.publish).toHaveBeenCalled();
 });
+
+
+it('rejects update if the ticket is reserved', async () => {
+  const { cookie } = await signin();
+  const {
+    body: { id },
+  } = await createTicket(cookie);
+
+  await Ticket.findByIdAndUpdate(id, { orderId: new Types.ObjectId().toHexString() });
+  const updatedData = generateValidData();
+
+  await request(app)
+    .put(`/api/tickets/${id}`)
+    .set("Cookie", cookie)
+    .send(updatedData)
+    .expect(400);
+})

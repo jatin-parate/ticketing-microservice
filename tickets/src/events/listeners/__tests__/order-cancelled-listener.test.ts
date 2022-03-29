@@ -1,12 +1,12 @@
-import {OrderCreatedListener} from "../order-created-listener";
+import {OrderCancelledListener} from "../order-cancelled-listener";
 import Ticket from "../../../models/ticket";
 import faker from "@faker-js/faker";
 import {Types} from "mongoose";
-import {OrderCreatedEvent, OrderStatus, Subjects} from "@jatin.parate/common";
+import {OrderCancelledEvent, Subjects} from "@jatin.parate/common";
 import {natsWrapper} from "../../../nats-wrapper";
 import Mock = jest.Mock;
 
-describe('OrderCreatedListener', () => {
+describe('OrderCancelledListener', () => {
   const setup = async () => {
     const ticket = Ticket.build({
       title: faker.commerce.productName(),
@@ -17,18 +17,14 @@ describe('OrderCreatedListener', () => {
     await ticket.save();
 
     const msg = {ack: jest.fn()}
-    const data: OrderCreatedEvent['data'] = {
+    const data: OrderCancelledEvent['data'] = {
       id: new Types.ObjectId().toHexString(),
       ticket: {
         id: ticket.id,
-        price: ticket.price,
       },
       version: 0,
-      userId: new Types.ObjectId().toHexString(),
-      status: OrderStatus.Created,
-      expiresAt: faker.date.future().toISOString(),
     }
-    const listener = new OrderCreatedListener(natsWrapper.client);
+    const listener = new OrderCancelledListener(natsWrapper.client);
 
     return {ticket, msg, data, listener};
   }
@@ -47,7 +43,7 @@ describe('OrderCreatedListener', () => {
 
     const updatedTicket = await Ticket.findById(ticket.id);
     expect(updatedTicket).toBeDefined();
-    expect(updatedTicket!.orderId).toEqual(data.id);
+    expect(updatedTicket!.orderId).not.toBeDefined();
   });
 
   it('throws error if no ticket was found', async () => {
@@ -67,13 +63,14 @@ describe('OrderCreatedListener', () => {
     const [[subject, jsonString]] = (natsWrapper.client.publish as any as Mock).mock.calls;
     const ticket = await Ticket.findById(ticketId).exec();
     expect(subject).toEqual(Subjects.TicketUpdated);
-    expect(JSON.parse(jsonString)).toMatchObject({
+    const updatedObject = JSON.parse(jsonString);
+    expect(updatedObject).not.toHaveProperty('orderId');
+    expect(updatedObject).toMatchObject({
       id: ticket!.id,
       price: ticket!.price,
       title: ticket!.title,
       userId: ticket!.userId,
       version: ticket!.version,
-      orderId: ticket!.orderId,
     });
   });
 });

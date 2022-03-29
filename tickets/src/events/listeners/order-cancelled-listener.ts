@@ -1,14 +1,14 @@
-import {Listener, OrderCreatedEvent, Subjects} from "@jatin.parate/common";
+import {Listener, OrderCancelledEvent, Subjects} from "@jatin.parate/common";
 import {Message} from "node-nats-streaming";
 import {queueGroupName} from "./queue-group-name";
 import Ticket from "../../models/ticket";
 import {TicketUpdatedPublisher} from "../publishers/ticket-updated-publisher";
 
-export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
+export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
   queueGroupName = queueGroupName;
-  subject: OrderCreatedEvent["subject"] = Subjects.OrderCreated;
+  subject: OrderCancelledEvent["subject"] = Subjects.OrderCancelled;
 
-  async onMessage(data: OrderCreatedEvent["data"], msg: Message) {
+  async onMessage(data: OrderCancelledEvent["data"], msg: Message) {
     // Find the ticket that the order is reserving
     const ticket = await Ticket.findById(data.ticket.id).exec();
 
@@ -18,7 +18,7 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
     }
 
     // Mark the ticket as being reserved by settings it's orderId property
-    ticket.orderId = data.id;
+    ticket.orderId = undefined;
 
     // Save the ticket
     await ticket.save();

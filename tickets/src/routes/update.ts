@@ -1,15 +1,16 @@
 import {
+  BadRequestError,
   expressValidationResultMiddleware,
   NotFoundError,
   requireAuth,
   UnauthorizedError,
 } from "@jatin.parate/common";
-import { Request, Response, Router } from "express";
-import { body, param } from "express-validator";
-import { startSession, Types } from "mongoose";
-import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";
-import Ticket, { TicketDocument } from "../models/ticket";
-import { natsWrapper } from "../nats-wrapper";
+import {Request, Response, Router} from "express";
+import {body, param} from "express-validator";
+import {startSession} from "mongoose";
+import {TicketUpdatedPublisher} from "../events/publishers/ticket-updated-publisher";
+import Ticket from "../models/ticket";
+import {natsWrapper} from "../nats-wrapper";
 
 const router = Router();
 
@@ -20,7 +21,7 @@ router.put(
     param("id").isMongoId().withMessage("Invalid id"),
     body("title").notEmpty().withMessage("Title is required"),
     body("price")
-      .isFloat({ gt: -1 })
+      .isFloat({gt: -1})
       .withMessage("Price must be positive decimal value"),
   ],
   expressValidationResultMiddleware,
@@ -31,13 +32,17 @@ router.put(
       throw new NotFoundError();
     }
 
+    if (ticket.orderId != null) {
+      throw new BadRequestError('Cannot edit a reserved ticket!');
+    }
+
     if (ticket.userId !== req.currentUser!.id) {
       throw new UnauthorizedError();
     }
 
     const session = await startSession();
     Object.assign(ticket, req.body);
-    await ticket.save({ session });
+    await ticket.save({session});
 
     new TicketUpdatedPublisher(natsWrapper.client).publish({
       id: ticket.id,
@@ -51,4 +56,4 @@ router.put(
   }
 );
 
-export { router as updateTicketRouter };
+export {router as updateTicketRouter};
