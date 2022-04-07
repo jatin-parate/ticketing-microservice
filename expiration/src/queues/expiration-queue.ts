@@ -13,9 +13,10 @@ const expirationQueue = new Queue<Payload>("order:expiration", {
 });
 
 expirationQueue.process(async (job) => {
-  new ExpirationPublisher(natsWrapper.client).publish({
+  await new ExpirationPublisher(natsWrapper.client).publish({
     orderId: job.data.orderId,
   });
+  await job.moveToCompleted();
 });
 
 export { expirationQueue };

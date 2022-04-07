@@ -9,7 +9,12 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
   async onMessage(data: OrderCreatedEvent["data"], msg: Message) {
     expirationQueue.add(
       { orderId: data.id },
-      { delay: new Date(data.expiresAt).getTime() - new Date().getTime() }
+      {
+        delay: Math.max(
+          new Date(data.expiresAt).getTime() - new Date().getTime(),
+          0
+        ),
+      }
     );
     // Automatically remove the job from the queue after it has been processed
     msg.ack();
