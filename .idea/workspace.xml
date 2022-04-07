@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b0c15bd2-e3c2-4d43-b9c6-50c188b707f4" name="Changes" comment="Added ticket listener tests in order service">
-      <change afterPath="$PROJECT_DIR$/tickets/src/events/listeners/__tests__/order-created-listener.test.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tickets/src/events/listeners/order-created-listener.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tickets/src/events/listeners/queue-group-name.ts" afterDir="false" />
+    <list default="true" id="b0c15bd2-e3c2-4d43-b9c6-50c188b707f4" name="Changes" comment="Updated tickets service">
+      <change afterPath="$PROJECT_DIR$/expiration/.dockerignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/expiration/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/expiration/package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/expiration/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/expiration/src/__mocks__/nats-wrapper.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/expiration/src/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/expiration/src/nats-wrapper.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/expiration/tsconfig.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infra/k8s/expiration-depl.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/infra/k8s/expiration-radis-depl.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orders/src/models/order.ts" beforeDir="false" afterPath="$PROJECT_DIR$/orders/src/models/order.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tickets/src/models/ticket.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tickets/src/models/ticket.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,6 +38,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectId" id="26ycvUUyyaZnjFiH6mQauTSiE8n" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -44,34 +52,40 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="16.13.1" />
     <property name="javascript.nodejs.core.library.typings.version" value="16.11.26" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/orders/src" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/expiration/src" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs.jest.jest_package" value="$PROJECT_DIR$/tickets/node_modules/jest" />
     <property name="nodejs_interpreter_path" value="$USER_HOME$/.nvm/versions/node/v16.13.1/bin/node" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="settings.typescriptcompiler" />
+    <property name="settings.editor.selected.configurable" value="settings.javascript.linters.tslint" />
     <property name="ts.external.directory.path" value="$PROJECT_DIR$/orders/node_modules/typescript/lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/expiration/src" />
+      <recent name="$PROJECT_DIR$/expiration" />
+      <recent name="$PROJECT_DIR$/tickets/src/events/listeners/__tests__" />
+      <recent name="$PROJECT_DIR$/tickets/src/events/listeners" />
       <recent name="$PROJECT_DIR$/orders/src" />
     </key>
   </component>
-  <component name="RunManager" selected="Jest.OrderCreatedListener">
-    <configuration name="OrderCreatedListener" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Docker.expiration/Dockerfile">
+    <configuration name="OrderCancelledListener" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <node-options value="" />
       <jest-package value="$PROJECT_DIR$/tickets/node_modules/jest" />
       <working-dir value="$PROJECT_DIR$/tickets" />
       <envs />
       <scope-kind value="SUITE" />
-      <test-file value="$PROJECT_DIR$/tickets/src/events/listeners/__tests__/order-created-listener.test.ts" />
+      <test-file value="$PROJECT_DIR$/tickets/src/events/listeners/__tests__/order-cancelled-listener.test.ts" />
       <test-names>
-        <test-name value="OrderCreatedListener" />
+        <test-name value="OrderCancelledListener" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="OrderCreatedListener.throws error if ticket is already booked" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+    <configuration name="OrderCreatedListener.publishes ticket updated event" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <node-options value="" />
       <jest-package value="$PROJECT_DIR$/tickets/node_modules/jest" />
@@ -81,41 +95,36 @@
       <test-file value="$PROJECT_DIR$/tickets/src/events/listeners/__tests__/order-created-listener.test.ts" />
       <test-names>
         <test-name value="OrderCreatedListener" />
-        <test-name value="throws error if ticket is already booked" />
+        <test-name value="publishes ticket updated event" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="should be defined" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+    <configuration name="rejects update if the ticket is reserved" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
       <node-interpreter value="project" />
       <node-options value="" />
       <jest-package value="$PROJECT_DIR$/tickets/node_modules/jest" />
       <working-dir value="$PROJECT_DIR$/tickets" />
       <envs />
       <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tickets/src/events/listeners/__tests__/order-created-listener.test.ts" />
+      <test-file value="$PROJECT_DIR$/tickets/src/routes/__tests__/update.test.ts" />
       <test-names>
-        <test-name value="should be defined" />
+        <test-name value="rejects update if the ticket is reserved" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="should update order id on ticket" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <node-options value="" />
-      <jest-package value="$PROJECT_DIR$/tickets/node_modules/jest" />
-      <working-dir value="$PROJECT_DIR$/tickets" />
-      <envs />
-      <scope-kind value="TEST" />
-      <test-file value="$PROJECT_DIR$/tickets/src/events/listeners/__tests__/order-created-listener.test.ts" />
-      <test-names>
-        <test-name value="should update order id on ticket" />
-      </test-names>
+    <configuration name="expiration/Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="sourceFilePath" value="expiration/Dockerfile" />
+        </settings>
+      </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="test" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/orders/package.json" />
+    <configuration name="pub" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/common/package.json" />
       <command value="run" />
       <scripts>
-        <script value="test" />
+        <script value="pub" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
@@ -123,11 +132,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Jest.OrderCreatedListener" />
-        <item itemvalue="Jest.OrderCreatedListener.throws error if ticket is already booked" />
-        <item itemvalue="Jest.should update order id on ticket" />
-        <item itemvalue="Jest.should be defined" />
-        <item itemvalue="npm.test" />
+        <item itemvalue="Docker.expiration/Dockerfile" />
+        <item itemvalue="Jest.rejects update if the ticket is reserved" />
+        <item itemvalue="Jest.OrderCancelledListener" />
+        <item itemvalue="Jest.OrderCreatedListener.publishes ticket updated event" />
+        <item itemvalue="npm.pub" />
       </list>
     </recent_temporary>
   </component>
@@ -141,7 +150,7 @@
       <updated>1648399509940</updated>
       <workItem from="1648399513315" duration="110000" />
       <workItem from="1648439798720" duration="2954000" />
-      <workItem from="1648537815413" duration="6431000" />
+      <workItem from="1648537815413" duration="18433000" />
     </task>
     <task id="LOCAL-00001" summary="Added ticketing service model test cases">
       <created>1648399611026</created>
@@ -157,7 +166,28 @@
       <option name="project" value="LOCAL" />
       <updated>1648442360299</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Updated common module">
+      <created>1648553501803</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1648553501803</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Updated common module">
+      <created>1648553580352</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1648553580352</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Updated tickets service">
+      <created>1648564053977</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1648564053977</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -177,7 +207,9 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added ticketing service model test cases" />
     <MESSAGE value="Added ticket listener tests in order service" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added ticket listener tests in order service" />
+    <MESSAGE value="Updated common module" />
+    <MESSAGE value="Updated tickets service" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated tickets service" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
