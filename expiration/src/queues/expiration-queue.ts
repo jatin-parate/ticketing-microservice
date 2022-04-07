@@ -1,4 +1,6 @@
 import Queue from "bull";
+import { OrderCancelPublisher } from "../events/publishers/order-cancel-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 interface Payload {
   orderId: string;
@@ -11,7 +13,9 @@ const expirationQueue = new Queue<Payload>("order:expiration", {
 });
 
 expirationQueue.process(async (job) => {
-  console.log("I want to publish this event", JSON.stringify(job));
+  // new OrderCancelPublisher(natsWrapper.client).publish({
+
+  // })
 });
 
 export { expirationQueue };

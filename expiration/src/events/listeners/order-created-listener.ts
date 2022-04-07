@@ -7,7 +7,10 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
   subject: Subjects.OrderCreated = Subjects.OrderCreated;
   queueGroupName = queueGroupName;
   async onMessage(data: OrderCreatedEvent["data"], msg: Message) {
-    expirationQueue.add({ orderId: data.id });
+    expirationQueue.add(
+      { orderId: data.id },
+      { delay: new Date(data.expiresAt).getTime() - new Date().getTime() }
+    );
     // Automatically remove the job from the queue after it has been processed
     msg.ack();
   }

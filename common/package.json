@@ -1,6 +1,6 @@
 {
   "name": "@jatin.parate/common",
-  "version": "1.1.12",
+  "version": "1.1.13",
   "description": "",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",

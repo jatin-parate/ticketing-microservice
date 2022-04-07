@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev src/index.ts",
+    "start": "ts-node-dev --exit-child --respawn --transpile-only --watch src src/index.ts",
     "test": "jest --watchAll --no-cache --runInBand"
   },
   "jest": {
@@ -18,7 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@jatin.parate/common": "1.1.12",
+    "@jatin.parate/common": "^1.1.13",
     "@types/bull": "^3.15.8",
     "@types/node": "^17.0.17",
     "bull": "^4.8.1",
